@@ -319,6 +319,18 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
+  // Eraser size: + / -
+  if (e.key === '+' || e.key === '=') {
+    wsSend({ type: 'eraser_size', delta: 10 });
+    showToast('Eraser size +');
+    return;
+  }
+  if (e.key === '-' || e.key === '_') {
+    wsSend({ type: 'eraser_size', delta: -10 });
+    showToast('Eraser size −');
+    return;
+  }
+
   if (e.key === 'Escape' && !instrPanel.hasAttribute('hidden')) {
     closeInstructions();
   }
