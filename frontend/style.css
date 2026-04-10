@@ -1,0 +1,599 @@
+/* ============================================================
+   AirCanvas Pro — Stylesheet
+   Dark glassmorphism UI · smooth animations · responsive
+   ============================================================ */
+
+/* ── Reset ────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Design tokens ────────────────────────────────────────── */
+:root {
+  --bg:          #0d0f14;
+  --bg-2:        #13161e;
+  --surface:     rgba(255, 255, 255, 0.07);
+  --surface-2:   rgba(255, 255, 255, 0.12);
+  --border:      rgba(255, 255, 255, 0.10);
+  --text:        #e8eaf0;
+  --text-muted:  #7a7f94;
+  --accent:      #6c63ff;
+  --accent-glow: rgba(108, 99, 255, 0.4);
+  --nav-h:       58px;
+  --status-h:    30px;
+  --dock-h:      88px;
+  --radius:      14px;
+  --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+  --t:           0.22s;
+}
+
+/* ── Light theme override ─────────────────────────────────── */
+body.light {
+  --bg:        #f0f2f8;
+  --bg-2:      #e4e7f0;
+  --surface:   rgba(0, 0, 0, 0.05);
+  --surface-2: rgba(0, 0, 0, 0.09);
+  --border:    rgba(0, 0, 0, 0.10);
+  --text:      #1a1d2e;
+  --text-muted:#6b7280;
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+html, body {
+  height: 100%;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ── Navbar ───────────────────────────────────────────────── */
+.navbar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: rgba(13, 15, 20, 0.85);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+}
+
+body.light .navbar {
+  background: rgba(240, 242, 248, 0.88);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.nav-icon {
+  font-size: 1.25rem;
+  color: var(--accent);
+  filter: drop-shadow(0 0 8px var(--accent-glow));
+  line-height: 1;
+}
+
+.nav-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #a78bfa 0%, #6c63ff 50%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: background var(--t) var(--ease),
+              transform var(--t) var(--ease),
+              box-shadow var(--t) var(--ease);
+  user-select: none;
+}
+
+.nav-btn svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.nav-btn:hover {
+  background: var(--surface-2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.nav-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.nav-btn.icon-only {
+  padding: 7px 10px;
+}
+
+/* ── Status bar ───────────────────────────────────────────── */
+.status-bar {
+  position: fixed;
+  top: var(--nav-h);
+  left: 0;
+  right: 0;
+  height: var(--status-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  background: rgba(13, 15, 20, 0.7);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  z-index: 99;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+body.light .status-bar {
+  background: rgba(240, 242, 248, 0.8);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4b5563;
+  flex-shrink: 0;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.status-dot.connected {
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e99;
+}
+
+.status-dot.disconnected {
+  background: #ef4444;
+}
+
+.status-dot.connecting {
+  background: #f59e0b;
+  animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.status-sep {
+  color: var(--border);
+  flex-shrink: 0;
+}
+
+/* ── Canvas wrapper ───────────────────────────────────────── */
+.canvas-wrapper {
+  position: fixed;
+  top: calc(var(--nav-h) + var(--status-h));
+  left: 0;
+  right: 0;
+  bottom: var(--dock-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-2);
+  overflow: hidden;
+}
+
+/* Live webcam video — visible as fallback / background */
+#webcam {
+  position: absolute;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius);
+  object-fit: contain;
+  display: block;
+  /* Mirror so it feels natural */
+  transform: scaleX(-1);
+}
+
+/* Off-screen capture canvas — never visible */
+#capture-canvas {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  visibility: hidden;
+}
+
+/* Processed frame canvas — overlays the video */
+#display-canvas {
+  position: absolute;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.55);
+  display: block;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+#display-canvas.visible {
+  opacity: 1;
+}
+
+/* Camera placeholder */
+.camera-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  text-align: center;
+  padding: 20px;
+  z-index: 10;
+  transition: opacity 0.3s;
+}
+
+.camera-placeholder.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.placeholder-icon {
+  font-size: 3.5rem;
+  animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0);    opacity: 0.7; }
+  50%       { transform: translateY(-8px); opacity: 1;   }
+}
+
+.placeholder-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.placeholder-hint strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── Bottom dock ──────────────────────────────────────────── */
+.dock-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--dock-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  /* Allow clicks to pass through the container but not the dock pill */
+  pointer-events: none;
+}
+
+.dock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(13, 15, 20, 0.82);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  border: 1px solid var(--border);
+  border-radius: 60px;
+  box-shadow:
+    0 -2px 20px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  pointer-events: all;
+}
+
+body.light .dock {
+  background: rgba(240, 242, 248, 0.9);
+}
+
+.dock-divider {
+  width: 1px;
+  height: 30px;
+  background: var(--border);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* ── Pen buttons ──────────────────────────────────────────── */
+.pen-btn {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--t) var(--ease);
+  outline: none;
+  flex-shrink: 0;
+}
+
+.pen-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 50%;
+}
+
+.pen-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+  transition:
+    transform var(--t) var(--ease),
+    box-shadow var(--t) var(--ease),
+    border-color var(--t) var(--ease),
+    width var(--t) var(--ease),
+    height var(--t) var(--ease);
+}
+
+/* Hover — scale up slightly */
+.pen-btn:hover .pen-circle {
+  transform: scale(1.15);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Active / selected — lift the whole button */
+.pen-btn.active {
+  transform: translateY(-12px);
+}
+
+.pen-btn.active .pen-circle {
+  width: 40px;
+  height: 40px;
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    0 0 0 3px rgba(255, 255, 255, 0.18);
+}
+
+/* Eraser button */
+.eraser-circle {
+  background: #374151 !important;
+}
+
+.eraser-circle svg {
+  width: 16px;
+  height: 16px;
+  color: #d1d5db;
+  flex-shrink: 0;
+}
+
+/* ── Instructions panel ───────────────────────────────────── */
+.instructions-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.94);
+  width: min(420px, 92vw);
+  background: rgba(16, 18, 26, 0.97);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 28px 24px;
+  z-index: 200;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+}
+
+body.light .instructions-panel {
+  background: rgba(240, 242, 248, 0.98);
+}
+
+.instructions-panel:not([hidden]) {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: all;
+}
+
+/* When hidden attribute is present, keep it invisible */
+.instructions-panel[hidden] {
+  display: block !important; /* override browser hidden so CSS transition works */
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.94);
+}
+
+.instructions-panel h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--t), color var(--t);
+}
+
+.close-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.gesture-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.gesture-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.gesture-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.gesture-list strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.gesture-list p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Keyboard shortcut grid */
+.shortcut-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.tip {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+/* Backdrop */
+.instructions-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 199;
+}
+
+.instructions-backdrop[hidden] {
+  display: none;
+}
+
+/* ── Toast notifications ──────────────────────────────────── */
+.toast-container {
+  position: fixed;
+  bottom: calc(var(--dock-h) + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 8px;
+  z-index: 300;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 8px 18px;
+  background: rgba(22, 25, 36, 0.95);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  font-size: 0.78rem;
+  color: var(--text);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+  animation: toast-in 0.25s var(--ease) forwards;
+}
+
+.toast.out {
+  animation: toast-out 0.22s var(--ease) forwards;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: translateY(0)    scale(1);    }
+  to   { opacity: 0; transform: translateY(-8px) scale(0.94); }
+}
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }

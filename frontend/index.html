@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AirCanvas Pro</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────────────── -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-brand">
+      <span class="nav-icon">✦</span>
+      <span class="nav-title">AirCanvas Pro</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" id="btn-clear" title="Clear canvas" aria-label="Clear canvas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14H6L5 6"/>
+          <path d="M10 11v6"/><path d="M14 11v6"/>
+          <path d="M9 6V4h6v2"/>
+        </svg>
+        Clear
+      </button>
+      <button class="nav-btn" id="btn-save" title="Save drawing" aria-label="Save drawing">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Save
+      </button>
+      <button class="nav-btn" id="btn-instructions" title="Toggle instructions" aria-label="Toggle instructions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        Help
+      </button>
+      <button class="nav-btn icon-only" id="btn-theme" title="Toggle theme" aria-label="Toggle dark/light mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Status bar ─────────────────────────────────────────── -->
+  <div class="status-bar" role="status" aria-live="polite">
+    <span class="status-dot" id="status-dot"></span>
+    <span id="status-text">Starting camera…</span>
+    <span class="status-sep">|</span>
+    <span id="status-mode">Mode: —</span>
+    <span class="status-sep">|</span>
+    <span id="status-fps">FPS: —</span>
+    <span class="status-sep">|</span>
+    <span id="status-color">Color: red</span>
+  </div>
+
+  <!-- ── Main canvas area ───────────────────────────────────── -->
+  <main class="canvas-wrapper" role="main">
+
+    <!--
+      The video element is VISIBLE here as a live fallback preview.
+      When the backend is connected, the display-canvas overlays it
+      with the processed (annotated) frame.
+    -->
+    <video id="webcam" autoplay muted playsinline></video>
+
+    <!-- Off-screen capture canvas — never shown directly -->
+    <canvas id="capture-canvas"></canvas>
+
+    <!--
+      Display canvas — rendered on top of the video.
+      Hidden until the first processed frame arrives from the backend.
+    -->
+    <canvas id="display-canvas"></canvas>
+
+    <!-- Shown only while waiting for camera permission -->
+    <div class="camera-placeholder" id="camera-placeholder">
+      <div class="placeholder-icon">📷</div>
+      <p id="placeholder-msg">Waiting for camera access…</p>
+      <p class="placeholder-hint">Make sure you're on <strong>http://localhost:8000</strong></p>
+    </div>
+
+  </main>
+
+  <!-- ── Bottom pen dock ────────────────────────────────────── -->
+  <div class="dock-container" role="toolbar" aria-label="Drawing tools">
+    <div class="dock" id="pen-dock">
+
+      <button class="pen-btn active" data-color="red" aria-label="Red pen" aria-pressed="true">
+        <span class="pen-circle" style="background:#ef4444;"></span>
+      </button>
+      <button class="pen-btn" data-color="blue" aria-label="Blue pen" aria-pressed="false">
+        <span class="pen-circle" style="background:#3b82f6;"></span>
+      </button>
+      <button class="pen-btn" data-color="green" aria-label="Green pen" aria-pressed="false">
+        <span class="pen-circle" style="background:#22c55e;"></span>
+      </button>
+      <button class="pen-btn" data-color="yellow" aria-label="Yellow pen" aria-pressed="false">
+        <span class="pen-circle" style="background:#eab308;"></span>
+      </button>
+      <button class="pen-btn" data-color="white" aria-label="White pen" aria-pressed="false">
+        <span class="pen-circle" style="background:#f8fafc; border-color:rgba(255,255,255,0.5);"></span>
+      </button>
+
+      <div class="dock-divider" role="separator"></div>
+
+      <button class="pen-btn eraser-btn" data-color="eraser" aria-label="Eraser" aria-pressed="false">
+        <span class="pen-circle eraser-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M20 20H7L3 16l11-11 6 6-3.5 3.5"/>
+            <path d="M6.5 17.5l4-4"/>
+          </svg>
+        </span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ── Instructions panel ─────────────────────────────────── -->
+  <div class="instructions-panel" id="instructions-panel" role="dialog" aria-label="Gesture instructions" hidden>
+    <button class="close-btn" id="close-instructions" aria-label="Close">✕</button>
+    <h2>✦ Gesture Guide</h2>
+    <ul class="gesture-list">
+      <li>
+        <span class="gesture-icon">☝️</span>
+        <div>
+          <strong>Index finger up</strong>
+          <p>Drawing mode — move to draw</p>
+        </div>
+      </li>
+      <li>
+        <span class="gesture-icon">✌️</span>
+        <div>
+          <strong>Index + Middle up</strong>
+          <p>Selection mode — hover over tools</p>
+        </div>
+      </li>
+      <li>
+        <span class="gesture-icon">🤏</span>
+        <div>
+          <strong>Pinch gesture</strong>
+          <p>Click — select the hovered tool</p>
+        </div>
+      </li>
+      <li>
+        <span class="gesture-icon">✊</span>
+        <div>
+          <strong>All fingers down</strong>
+          <p>Pause drawing</p>
+        </div>
+      </li>
+    </ul>
+    <div class="shortcut-grid">
+      <span class="key">1–5</span><span>Switch pen color</span>
+      <span class="key">E</span><span>Eraser</span>
+      <span class="key">Esc</span><span>Close panel</span>
+    </div>
+    <p class="tip">💡 Keep your hand well-lit and within the camera frame.</p>
+  </div>
+  <div class="instructions-backdrop" id="instructions-backdrop" hidden></div>
+
+  <!-- ── Toast container ────────────────────────────────────── -->
+  <div class="toast-container" id="toast-container" aria-live="assertive" aria-atomic="true"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
